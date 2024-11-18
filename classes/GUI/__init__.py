@@ -204,7 +204,6 @@ class GUI(Ui_MainWindow):
             layout.addWidget(widget_pages, alignment=QtCore.Qt.AlignmentFlag.AlignVCenter)
 
             lbl_Pages = QtWidgets.QLabel(parent=widget_pages)
-            # lbl_Pages.setFixedHeight(40)
             lbl_Pages.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
             lbl_Pages.setText(str(', '.join(map(str, section.pages))))
             

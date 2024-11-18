@@ -11,5 +11,4 @@ if __name__ == '__main__':
         
     sys.exit(app.exec())
 
-# pyuic6 -o output.py -x MainWindow.ui
-# builds : pyinstaller --onefile --windowed main.py
+# build the exe : pyinstaller --onefile --windowed main.py

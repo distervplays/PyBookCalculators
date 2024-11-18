@@ -114,7 +114,6 @@ class Ui_MainWindow(object):
             }
         """)
         self.list_PageSizes.setObjectName("list_PageSizes")
-        # self.list_PageSizes.lower()
         
         
         self.list_KaternSizes = QtWidgets.QListWidget(parent=MainWindow)
@@ -131,7 +130,6 @@ class Ui_MainWindow(object):
         self.list_KaternSizes.setFlow(QtWidgets.QListView.Flow.LeftToRight)
         self.list_KaternSizes.setObjectName("list_KaternSizes")
         self.list_KaternSizes.setSpacing(5)
-        # self.list_KaternSizes.setGridSize(QtCore.QSize(30, 30))  # Adjust the size as needed
         
         self.widget_TabContainer = QtWidgets.QWidget(parent=MainWindow)
         self.widget_TabContainer.setGeometry(QtCore.QRect(80, 50, 671, 241))
