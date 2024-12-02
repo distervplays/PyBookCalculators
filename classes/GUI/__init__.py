@@ -7,7 +7,7 @@ import os, json
 import pickle
 
 class GUI(Ui_MainWindow):
-    def __init__(self, saveDir: str = './saves'):
+    def __init__(self, saveDir: str = './.load_saves'):
         super(GUI, self).__init__()
         self.jcs = JobCalculatorStore(sort_sections=False)
         self.pageCount: int = 0
@@ -30,7 +30,7 @@ class GUI(Ui_MainWindow):
         
         
         
-    def submitJobId(self):
+    def setJobId(self):
         try:
             self.jobId = int(self.inp_JobId.text())
         except ValueError:
@@ -45,6 +45,32 @@ class GUI(Ui_MainWindow):
         self.retranslateUi(self.mw)
         return self.jobId
     
+    def deleteJobs(self):
+        def getJobs():
+            jobs = []
+            for item in os.listdir(self.saveDir):
+                if not item.endswith('.pkl'):
+                    continue
+                file_path = os.path.join(self.saveDir, item)
+                creation_time = os.path.getctime(file_path)
+                jobs.append((creation_time, file_path))
+            return jobs
+        
+        jobs = getJobs()
+        while len(jobs) > 6:
+            oldest_job = min(jobs, key=lambda x: x[0])
+            os.remove(oldest_job[1])
+            jobs.remove(oldest_job)
+            
+            jobs = getJobs()
+        
+        
+            
+
+            
+            
+        
+    
     def __save(self):
         os.makedirs(self.saveDir, exist_ok=True)
         
@@ -55,28 +81,35 @@ class GUI(Ui_MainWindow):
         
         with open(os.path.join(self.saveDir, f'job_{self.jobId}.pkl'), 'wb') as file:
             pickle.dump(data, file)
+        self.deleteJobs()
+    
+    def changeSaveDir(self):
+        self.local_saveDir = QtWidgets.QFileDialog.getExistingDirectory(self.mw, "Select Save Directory", self.saveDir)
+        if not self.config.has_section('Settings'):
+            self.config.add_section('Settings')
+        self.config.set('Settings', 'saveDir', self.local_saveDir)
+        with open(os.path.join(self.saveDir, 'config.ini'), 'w') as file:
+            self.config.write(file)
+        self.getSaveDir()
+        self.update_SavesList()
+    
+    def getSaveDir(self):
+        if self.config.has_section('Settings') and self.config.has_option('Settings', 'saveDir'):
+            self.local_saveDir = self.config.get('Settings', 'saveDir')
+            return self.config.get('Settings', 'saveDir')
+        
     
     def saveJob(self):
-        submitted = self.submitJobId()
+        submitted = self.setJobId()
         if submitted is None:
             return
         suggested_filename = f"job_{self.jobId}.json" if self.jobId is not None else "job.json"
-        
-        if self.local_saveDir is None:
-            saveDir = QtWidgets.QFileDialog.getSaveFileName(self.mw, "Select Save Path", 
-                                                            os.path.join(os.path.dirname(self.saveDir), suggested_filename), 
-                                                            "JSON Files (*.json)")[0]
-            if not self.config.has_section('Settings'):
-                self.config.add_section('Settings')
-            self.config.set('Settings', 'saveDir', os.path.dirname(saveDir))
-            with open(os.path.join(self.saveDir, 'config.ini'), 'w') as file:
-                self.config.write(file)
-                
-            self.local_saveDir = os.path.dirname(saveDir)
-        else:
+        if self.getSaveDir():
             saveDir = os.path.join(self.local_saveDir, suggested_filename)
-        
-        
+        else:
+            self.changeSaveDir()
+            saveDir = os.path.join(self.local_saveDir, suggested_filename)
+            
         if not saveDir:
             return
         try:

@@ -317,15 +317,15 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         font.setBold(True)
         
-        self.btn_IdSubmit = QtWidgets.QPushButton(parent=self.widget_Settings)
-        self.btn_IdSubmit.setGeometry(QtCore.QRect(30, 190, 91, 25))
-        self.btn_IdSubmit.setFont(font)
-        self.btn_IdSubmit.setStyleSheet("border: None;\n"
+        self.btn_ChangeDir = QtWidgets.QPushButton(parent=self.widget_Settings)
+        self.btn_ChangeDir.setGeometry(QtCore.QRect(30, 190, 91, 25))
+        self.btn_ChangeDir.setFont(font)
+        self.btn_ChangeDir.setStyleSheet("border: None;\n"
 "background: rgb(235,99,0);\n"
 "border-radius: 8px;\n"
 "color: white;")
-        self.btn_IdSubmit.setObjectName("btn_IdSubmit")
-        self.btn_IdSubmit.clicked.connect(lambda: self.submitJobId())
+        self.btn_ChangeDir.setObjectName("btn_ChangeDir")
+        self.btn_ChangeDir.clicked.connect(lambda: self.changeSaveDir())
         
         self.btn_JobSave = QtWidgets.QPushButton(parent=self.widget_Settings)
         self.btn_JobSave.setGeometry(QtCore.QRect(130, 190, 71, 25))
@@ -393,7 +393,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Sequence Calculator"))
-        self.lbl_TitleSeqSizes.setText(_translate("MainWindow", "SEQEUNCE SIZES"))
+        self.lbl_TitleSeqSizes.setText(_translate("MainWindow", "SEQUENCE SIZES"))
         self.btn_Sequence4.setText(_translate("MainWindow", "4"))
         self.btn_Sequence8.setText(_translate("MainWindow", "8"))
         self.btn_Sequence12.setText(_translate("MainWindow", "12"))
@@ -405,7 +405,7 @@ class Ui_MainWindow(object):
         self.lbl_TitleSettings.setText(_translate("MainWindow", "SETTINGS"))
         self.cb_AutoFormat.setText(_translate("MainWindow", "    Auto Format"))
         self.inp_JobId.setPlaceholderText(_translate("MainWindow", "JobId"))
-        self.btn_IdSubmit.setText(_translate("MainWindow", "Submit"))
+        self.btn_ChangeDir.setText(_translate("MainWindow", "Directory"))
         self.btn_JobSave.setText(_translate("MainWindow", "Save"))
         self.lbl_TitleLoadJobs.setText(_translate("MainWindow", "LOAD JOBS"))
         self.lbl_JobId.setText(_translate("MainWindow", f"Job ID: {self.jobId if self.jobId is not None else 'Null'}"))
