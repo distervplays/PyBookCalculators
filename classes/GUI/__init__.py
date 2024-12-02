@@ -2,6 +2,7 @@ from classes.JobCalculatorStore import JobCalculatorStore
 from classes.BookSequence import BookSection
 from PyQt6 import QtCore, QtWidgets, QtGui
 from .MainWindow import Ui_MainWindow
+from configparser import ConfigParser
 import os, json
 import pickle
 
@@ -12,7 +13,21 @@ class GUI(Ui_MainWindow):
         self.pageCount: int = 0
         self.jobId: int|None = None    
         self.saveDir = saveDir
+        self.local_saveDir = None
+        
         os.makedirs(self.saveDir, exist_ok=True)
+        
+        self.config = ConfigParser()
+        self.__loadConfig()
+
+        
+    def __loadConfig(self):
+        config_path = os.path.join(self.saveDir, 'config.ini')
+        if os.path.exists(config_path):
+            self.config.read(config_path)
+        self.local_saveDir = self.config.get('Settings', 'saveDir', fallback=None) if self.config.has_section('Settings') else None
+        
+        
         
     def submitJobId(self):
         try:
@@ -45,9 +60,22 @@ class GUI(Ui_MainWindow):
         if submitted is None:
             return
         suggested_filename = f"job_{self.jobId}.json" if self.jobId is not None else "job.json"
-        saveDir = QtWidgets.QFileDialog.getSaveFileName(self.mw, "Select Save Path", 
-                                                        os.path.join(os.path.dirname(self.saveDir), suggested_filename), 
-                                                        "JSON Files (*.json)")[0]
+        
+        if self.local_saveDir is None:
+            saveDir = QtWidgets.QFileDialog.getSaveFileName(self.mw, "Select Save Path", 
+                                                            os.path.join(os.path.dirname(self.saveDir), suggested_filename), 
+                                                            "JSON Files (*.json)")[0]
+            if not self.config.has_section('Settings'):
+                self.config.add_section('Settings')
+            self.config.set('Settings', 'saveDir', os.path.dirname(saveDir))
+            with open(os.path.join(self.saveDir, 'config.ini'), 'w') as file:
+                self.config.write(file)
+                
+            self.local_saveDir = os.path.dirname(saveDir)
+        else:
+            saveDir = os.path.join(self.local_saveDir, suggested_filename)
+        
+        
         if not saveDir:
             return
         try:
