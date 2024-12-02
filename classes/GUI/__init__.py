@@ -26,6 +26,7 @@ class GUI(Ui_MainWindow):
         if os.path.exists(config_path):
             self.config.read(config_path)
         self.local_saveDir = self.config.get('Settings', 'saveDir', fallback=None) if self.config.has_section('Settings') else None
+            
         
         
         
